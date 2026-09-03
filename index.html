@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>그랜저 GN7 사용 가이드</title>
+<meta name="description" content="그랜저 GN7 하이브리드 신차 인수 가이드 — 영업사원 설명 + 공식 매뉴얼 보충 정리">
+<style>
+/* ============ 테마 변수 ============ */
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1f2328; --muted:#6b7280;
+  --accent:#1464a8; --accent-soft:#e3eef8; --border:#e4e6ea; --chip:#eef1f5;
+  --header-bg:rgba(255,255,255,.85); --shadow:0 1px 3px rgba(0,0,0,.08);
+  --star:#f5b301; --ok-line:#e2e8f0;
+}
+[data-theme="dark"]{
+  --bg:#0e1014; --card:#191c23; --text:#e8eaed; --muted:#9aa3af;
+  --accent:#63a9e0; --accent-soft:#1d2c3c; --border:#2b303b; --chip:#232936;
+  --header-bg:rgba(14,16,20,.88); --shadow:0 1px 3px rgba(0,0,0,.4);
+  --star:#f5b301; --ok-line:#2b303b;
+}
+[data-theme="ivory"]{
+  --bg:#f6efe2; --card:#fffdf6; --text:#3d3325; --muted:#8a7c64;
+  --accent:#9a5f1d; --accent-soft:#f2e5cc; --border:#e7dcc3; --chip:#f1e6cf;
+  --header-bg:rgba(255,253,246,.88); --shadow:0 1px 3px rgba(90,60,10,.10);
+  --star:#c98a1b; --ok-line:#e7dcc3;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.6; font-size:15px;
+  -webkit-font-smoothing:antialiased; transition:background .25s,color .25s;
+}
+/* ============ 헤더 ============ */
+header{
+  position:sticky; top:0; z-index:50; background:var(--header-bg);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border); padding:10px 16px;
+}
+.top-row{max-width:1080px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center;}
+.top-row h1{font-size:18px; font-weight:800; letter-spacing:-.5px; white-space:nowrap;}
+.top-row h1 span{color:var(--accent);}
+.controls{margin-left:auto; display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+.search-wrap{position:relative;}
+.search-wrap input{
+  width:min(240px,52vw); height:44px; padding:0 34px 0 14px; font-size:14px;
+  border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--text);
+  outline:none; transition:border-color .2s;
+}
+.search-wrap input:focus{border-color:var(--accent);}
+.search-wrap button{
+  position:absolute; right:6px; top:50%; translate:0 -50%; width:32px; height:32px;
+  border:0; background:transparent; color:var(--muted); font-size:15px; cursor:pointer; border-radius:8px;
+}
+.search-wrap button:hover{background:var(--chip);}
+.theme-group{display:flex; border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+.theme-group button{
+  height:44px; padding:0 10px; border:0; background:var(--card); color:var(--muted);
+  font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:4px;
+}
+.theme-group button+.theme-group button{border-left:1px solid var(--border);}
+.theme-group button.active{background:var(--accent-soft); color:var(--accent);}
+#favToggle{
+  height:44px; padding:0 12px; border:1px solid var(--border); border-radius:12px; background:var(--card);
+  color:var(--text); font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all .15s;
+}
+#favToggle.active{background:var(--accent-soft); color:var(--accent); border-color:var(--accent);}
+/* ============ 메인 ============ */
+main{max-width:1080px; margin:0 auto; padding:18px 16px 60px;}
+.stats{font-size:13px; color:var(--muted); margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+.stats b{color:var(--accent);}
+/* 핵심 요약 */
+.quick{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; margin-bottom:22px;}
+.quick .q{
+  background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px 14px;
+  box-shadow:var(--shadow); font-size:13.5px;
+}
+.quick .q h4{font-size:13.5px; margin-bottom:4px; display:flex; gap:6px; align-items:center;}
+.quick .q p{color:var(--muted); line-height:1.55;}
+/* 카테고리 칩 */
+.chips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; margin-bottom:6px; scrollbar-width:thin;}
+.chip{
+  flex:0 0 auto; height:42px; padding:0 14px; border-radius:100px; border:1px solid var(--border);
+  background:var(--chip); color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; transition:all .15s;
+}
+.chip b{font-weight:800;}
+.chip.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+.chip:hover:not(.active){border-color:var(--accent); color:var(--accent);}
+/* 카드 그리드 */
+.section-title{font-size:17px; font-weight:800; margin:26px 0 10px; display:flex; align-items:center; gap:8px; color:var(--text);}
+.section-title::after{content:""; flex:1; height:1px; background:var(--ok-line);}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px;}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px 16px;
+  box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px; transition:transform .15s,box-shadow .15s,opacity .2s;
+}
+.card:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.10);}
+.card.hidden{display:none;}
+.card-head{display:flex; align-items:flex-start; gap:10px;}
+.card-icon{font-size:22px; line-height:1.3;}
+.card-head h3{font-size:15.5px; font-weight:800; flex:1; letter-spacing:-.3px; line-height:1.4;}
+.card .cat-label{font-size:11.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:100px; align-self:flex-start;}
+button.fav{
+  flex:0 0 auto; width:44px; height:44px; margin:-8px -8px -8px 0; border:0; background:transparent;
+  font-size:22px; color:var(--border); cursor:pointer; border-radius:12px; transition:all .15s;
+}
+button.fav:hover{background:var(--chip);}
+button.fav.on{color:var(--star);}
+.tags{display:flex; flex-wrap:wrap; gap:5px;}
+.tags span{font-size:11px; font-weight:600; color:var(--muted); background:var(--chip); padding:3px 9px; border-radius:100px;}
+.card-body{font-size:14px; color:var(--text);}
+.card-body ul{padding-left:0; list-style:none; display:flex; flex-direction:column; gap:6px;}
+.card-body li{padding-left:20px; position:relative;}
+.card-body li::before{content:"▸"; position:absolute; left:2px; color:var(--accent);}
+.card-body b{color:var(--accent);}
+.card-body .warn{color:#d2453f; font-weight:700;}
+/* 결과 없음 */
+#empty{display:none; text-align:center; padding:60px 20px; color:var(--muted);}
+#empty .big{font-size:40px; margin-bottom:8px;}
+/* 푸터 */
+footer{max-width:1080px; margin:0 auto; padding:18px 16px 40px; color:var(--muted); font-size:12.5px; border-top:1px solid var(--border);}
+/* 인쇄 */
+@media print{
+  header{position:static;}
+  .search-wrap,.theme-group,#favToggle,.chips,.stats{display:none !important;}
+  .card{break-inside:avoid; box-shadow:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top-row">
+    <h1>그랜저 <span>GN7</span> 사용 가이드</h1>
+    <div class="controls">
+      <div class="search-wrap">
+        <input id="searchInput" type="search" placeholder="기능 검색…  (예: 배터리, 주차, 크루즈)" aria-label="기능 검색">
+        <button id="clearBtn" type="button" aria-label="검색어 지우기" title="지우기">✕</button>
+      </div>
+      <div class="theme-group" role="group" aria-label="테마 변경">
+        <button type="button" data-theme-val="light" aria-label="밝은 테마">☀️ 밝게</button>
+        <button type="button" data-theme-val="dark" aria-label="어두운 테마">🌙 어둡게</button>
+        <button type="button" data-theme-val="ivory" aria-label="아이보리 테마">🕯️ 아이보리</button>
+      </div>
+      <button id="favToggle" type="button" aria-pressed="false">⭐ 즐겨찾기 <span id="favToggleCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="stats">
+    전체 <b id="totalCount">0</b>개 기능 · 고정핵심 <b id="resultCount"></b><span id="resultLabel"></span>
+  </div>
+
+  <div class="quick">
+    <div class="q"><h4>🔑 원격 시동</h4><p>문 잠금 버튼 → 원격시동(HOLD) 길게. 깜빡이 반짝이면 시동 완료.</p></div>
+    <div class="q"><h4>🔋 배터리 관리 ⚠️</h4><p>문 꼭 잠그기. 방전 시엔 고속주행으로 충전. 창문 안 닫힌 채 잠그지 않기.</p></div>
+    <div class="q"><h4>🛑 오토홀드</h4><p>신호대기·언덕길에서 초록불 확인 후 발 떼면 안전.</p></div>
+    <div class="q"><h4>🎥 주차녹화</h4><p>인도 후 3개월쯤 뒤엔 '주차 시 전원 끄기'로 변경해 배터리 보호.</p></div>
+    <div class="q"><h4>📲 디지털 키</h4><p>시동 후 NFC 카드는 패드에서 빼기. 통신 불가 지역 대비 실물 키 보관.</p></div>
+    <div class="q"><h4>💰 주차 할인</h4><p>공영주차장에서 "저공해차 할인"을 반드시 언급 → 최대 50% 감면.</p></div>
+  </div>
+
+  <div class="chips" id="chips" aria-label="카테고리 필터"></div>
+  <div id="resultInfo" class="stats" style="display:none;"></div>
+  <div id="sections"></div>
+  <div id="empty">
+    <div class="big">🔍</div>
+    <p><b>검색 결과가 없습니다.</b><br>다른 검색어로 다시 시도해 보세요.</p>
+  </div>
+</main>
+
+<footer>
+  <p>Source: 영업사원 신차 인수 설명(음성) + 현대자동차 공식 사용설명서(GN7 2026) 및 웹 검색 보충 · 2026-09 기준</p>
+  <p style="margin-top:4px;">이 페이지는 단일 HTML로 만들어진 오프라인 파일입니다. 브라우저에 직접 저장해도 그대로 동작합니다.</p>
+</footer>
+
+<script>
+/* ================= 데이터 ================= */
+const ITEMS = [
+{cat:"🔑 스마트키 & 시동", icon:"🔑", title:"키 구성 & 기계식 비상키", tags:["비상키","방전","키홀더"], body:`<ul>
+<li>리모컨 키 2개. 예전과 달리 기계식 비상키가 키 안에 숨어 있지 않고 <b>분리</b>되어 있어요.</li>
+<li>배터리가 완전히 방전되면 <b>비상키를 키홀더에 끼워</b> 문을 열 수 있습니다.</li>
+<li>없으면 문 여는 데 오래 걸리므로 <b>항상 휴대</b>하세요.</li></ul>`},
+{cat:"🔑 스마트키 & 시동", icon:"🔑", title:"차 밖 원격 시동", tags:["원격시동","HOLD","하이브리드"], body:`<ul>
+<li>① 도어 잠금 버튼으로 문을 잠근다 → ② <b>원격시동(HOLD) 버튼을 길게</b> 누른다 → ③ 깜빡이가 반짝이면 시동 완료.</li>
+<li>하이브리드는 시동음이 없어요. 깜빡이 반짝임이 기준.</li>
+<li>공회전 중 '웅' 소리는 배터리 충전을 위해 엔진이 도는 소리. 소리가 멈추면 배터리 모드로 전환된 것.</li>
+<li>매뉴얼 기준: 문 잠금 후 <b>4초 이내</b>에 버튼을 길게 누르세요.</li></ul>`},
+{cat:"🔑 스마트키 & 시동", icon:"🚙", title:"원격 전·후진 (좁은 주차장용)", tags:["원격주행","스마트키","센서"], body:`<ul>
+<li>시동이 걸린 상태에서 버튼을 <b>길게 누르면</b> 차가 앞/뒤로 이동합니다.</li>
+<li><b>손을 떼면 정지</b>, 센서가 장애물을 감지하면 자동 정지 (55cm 벽에서 실측 확인).</li>
+<li>시동 끄기는 버튼을 <b>짧게 1번</b> 누르면 됩니다.</li></ul>`},
+{cat:"🔑 스마트키 & 시동", icon:"🚪", title:"트렁크 & 주유구", tags:["트렁크","주유구","자동닫힘"], body:`<ul>
+<li>트렁크 열기: 버튼 <b>3초 이상</b> 누르면 자동으로 열림.</li>
+<li>트렁크 닫기: <b>닫힐 때까지 계속 누르고</b> 있어야 함 (뒤에 사람이 있을 때 대비한 안전장치).</li>
+<li>주유구: 차 문이 <b>잠기면 열리지 않고</b>, 문이 열리면 함께 열립니다. 주유소에선 문을 연 상태에서 주유구 레버를 여세요.</li></ul>`},
+{cat:"🔋 하이브리드 배터리 관리", icon:"🔋", title:"배터리는 2개!", tags:["시동배터리","12V","하이브리드"], body:`<ul>
+<li><b>하이브리드 배터리</b>: 주행 구동용. 크고 오래 감.</li>
+<li><b>시동 배터리(12V)</b>: 내비·블랙박스·스마트키 등 전장품용. 용량이 작고 <span class="warn">잘 방전됨</span>. 교체약 30만 원대.</li>
+<li>재생제동 특성상 하이브리드 배터리를 먼저 충전해서 시동 배터리 충전이 상대적으로 부족합니다.</li></ul>`},
+{cat:"🔋 하이브리드 배터리 관리", icon:"⚠️", title:"배터리 관리 핵심", tags:["방전예방","문잠금","고속주행","배터리세이버"], body:`<ul>
+<li>① <b>문은 반드시 잠그고 내리기.</b> 요즘 차는 배터리 세이버가 있어 문을 잠그면 전원이 차단되는데, 문이 열려 있으면 전류가 계속 흐릅니다.</li>
+<li>② 창문이 내려간 채 문을 잠그면 '창문 열림' 신호가 나가 배터리를 소모 → <b>창문 닫고 잠그기</b>.</li>
+<li>③ 방전되면 시동만 걸어놓는 것으로는 충전되지 않아요 → <b>고속주행</b>으로 회복.</li>
+<li>④ 방전→불완전 충전이 1~2회 반복되면 수명이 급격히 줄어 교체비용 발생.</li>
+<li>⑤ 블랙박스 <b>주차녹화는 1년쯤 지나면 끄는 것</b>이 좋습니다.</li></ul>`},
+{cat:"🔋 하이브리드 배터리 관리", icon:"🚨", title:"12V 점프 버튼", tags:["점프시동","완전방전","비상키"], body:`<ul>
+<li>방전으로 문도 안 열릴 때: <b>비상키로 문을 열고</b>, 실내의 12V 배터리 리셋(점프) 버튼을 <b>3초 이상 누르면</b> 점프 시동이 됩니다.</li></ul>`},
+{cat:"⚙️ 변속기 (SBW 전자식)", icon:"🕹️", title:"변속기 조작법", tags:["SBW","D레인지","N중립","파킹"], body:`<ul>
+<li><b>위로 세게 올리면 D</b>, <b>아래로 세게 내리면 R</b>, <b>살짝 건드리면 N(중립)</b>.</li>
+<li><b>P 버튼</b>을 누르면 파킹.</li></ul>`},
+{cat:"⚙️ 변속기 (SBW 전자식)", icon:"🅿️", title:"P로 자동 전환되는 3가지 상황", tags:["오토파킹","안전장치","자동P"], body:`<ul>
+<li>① P 버튼을 누르거나 ② 시동을 끄거나 ③ <b>운전석 문을 열 때</b> (브레이크 밟은 상태).</li>
+<li>단, 차가 <b>정지해 있고 브레이크를 밟고 있을 때만</b> 작동. 주행 중에는 자동전환이 이뤄지지 않아요.</li></ul>`},
+{cat:"💺 운전석 & 스티어링 휠", icon:"🪑", title:"도어·시트·페달 주변", tags:["차일드락","요추받침","ESC","어닝"], body:`<ul>
+<li><b>차일드락</b>: 켜면 뒷좌석에서 문을 못 엶 (아이 탑승 시).</li>
+<li>시트 높이·<b>요추 받침대</b> 조절.</li>
+<li><b>라이트 각도</b>: LED라 눈부심 방지 위해 평소 3단계. 시골·비포장도로에서 안 보이면 올리기.</li>
+<li><b>전자식 사이드브레이크</b>: 브레이크를 밟거나 변속 조작만 해도 자동 해제.</li>
+<li><b>ESC(차체자세제어)</b>: 버튼에 <b>불이 들어오면 꺼진 것</b>. 평소엔 켜둠.</li>
+<li><b>어닝(창문 자동 하강)</b>: 문을 열면 창문이 살짝 내려갔다 닫으면 올라옴. 손·물건 끼임 주의(모터 손상).</li></ul>`},
+{cat:"💺 운전석 & 스티어링 휠", icon:"🎛️", title:"스티어링 휠 버튼", tags:["크루즈","LKA","트립","음성인식"], body:`<ul>
+<li><b>크루즈 컨트롤</b>: 20km/h 이상에서 작동.</li>
+<li><b>차선이탈경보·차선유지(LKA)</b>: 녹색 불이면 활성화. 깜빡이 없이 차선을 넘으면 경고음 + 핸들 보정. <b>길게 누르면 주황색 불로 꺼짐</b>. 새 차 초기엔 켜두기 추천.</li>
+<li><b>트립 버튼</b>: 계기판을 주행정보/주유정보/냉각수/타이어 공기압/내비 방향으로 전환</li>
+<li>오디오: 음성인식, 즐겨찾기, 전화 받기/끊기, 채널·볼륨.</li></ul>`},
+{cat:"📱 인포테인먼트 & 공조", icon:"🗺️", title:"내비게이션 & 화면 조작", tags:["내비","홈","미디어","목적지"], body:`<ul>
+<li><b>홈</b>: 홈 화면. <b>맵</b>: 내비게이션. <b>서치</b>: 목적지 입력.</li>
+<li><b>미디어 길게 누르기</b>: 오디오 켜기 (블루투스 연결).</li>
+<li>채널·즐겨찾기·설정은 화면 설정 메뉴에서 전부 조작.</li></ul>`},
+{cat:"📱 인포테인먼트 & 공조", icon:"❄️", title:"에어컨 & 시트", tags:["드라이브온","통풍시트","열선시트","핸들열선"], body:`<ul>
+<li>온도·바람세기·바람 방향 버튼은 화면 하단. X 위치(바람 꺼짐)로 슬라이드하면 공조 꺼짐.</li>
+<li><b>드라이브 온</b>: 한겨울/한여름에 <b>운전석(또는 운전석+조수석)만 빠르게</b> 공조를 켜는 기능. 동승자가 타면 전체로 전환.</li>
+<li><b>통풍·열선시트, 핸들 열선(조수석 포함)</b> 버튼.</li></ul>`},
+{cat:"📱 인포테인먼트 & 공조", icon:"🔌", title:"충전 (USB-C)", tags:["USB-C","무선충전","음악"], body:`<ul>
+<li>포트가 <b>USB-C 타입</b>으로 전환됨 (충전 겸용). 음악 재생용 USB도 C타입.</li>
+<li>무선충전 패드는 핸드폰을 올리고 불이 들어오면 충전 중.</li></ul>`},
+{cat:"🛋️ 편의 기능", icon:"🛑", title:"오토홀드", tags:["신호대기","언덕길","오토홀드"], body:`<ul>
+<li>버튼을 누르면 READY 옆에 <b>하얀 불</b>. 브레이크를 밟으면 <b>초록불</b>로 전환.</li>
+<li>초록불 상태에서 발을 떼도 <b>액셀을 밟기 전까지 차가 움직이지 않음</b>.</li>
+<li>신호대기·브레이크를 계속 밟기 귀찮을 때, 졸리거나 다리가 아플 때 유용.</li>
+<li><b>언덕길(눈·흙길) 출발 시 밀림 방지</b>에 특히 유용. 평소엔 꺼두기.</li></ul>`},
+{cat:"🛋️ 편의 기능", icon:"🖥️", title:"서라운드 뷰 모니터", tags:["어라운드뷰","사각지대","주차"], body:`<ul>
+<li>버튼을 누르면 <b>언제든지</b> 전방위 화면 표시 (주차 시 자동, 주행 중에도 가능).</li>
+<li>차 옆을 지나가는 아이·오토바이 등 사이드미러 사각지대 확인에 유용.</li></ul>`},
+{cat:"🛋️ 편의 기능", icon:"📡", title:"전·후방 주차센서", tags:["주차센서","전방센서","경고음"], body:`<ul>
+<li>후진을 넣으면 후방+전방 센서가 같이 작동.</li>
+<li>단, 약 <b>1분 후 자동으로 꺼짐</b> (신호대기 중 경고음 방지). 필요할 때마다 버튼으로 다시 켜기.</li>
+<li>전방주차·코너링 시 불안하면 버튼을 눌러두세요.</li></ul>`},
+{cat:"🛋️ 편의 기능", icon:"💡", title:"실내등 설정", tags:["실내등","문열림","램프"], body:`<ul>
+<li>예전 차와 달리 <b>문을 열어도 불이 안 켜지는 설정</b>이 기본일 수 있어요.</li>
+<li>개별 버튼으로 문 열림 연동 설정 가능.</li></ul>`},
+{cat:"🎥 블랙박스 (빌트인캠)", icon:"🎥", title:"빌트인캠 사용법", tags:["블랙박스","주차녹화","SD카드","상시녹화"], body:`<ul>
+<li>화면 터치로 <b>실시간 전·후방 영상</b> 확인 가능.</li>
+<li><b>SD카드는 계기판 쪽에서 빼서</b> USB로 영상을 옮길 수 있습니다.</li>
+<li>기본 설정이 <b>상시녹화(주차녹화 포함)</b>.</li>
+<li>인도 직후 3개월간은 켜둬도 되지만, 이후엔 <b>'주차 시 전원 끄기'로 변경</b> 권장 (배터리 보호).</li>
+<li>매뉴얼: 12V 리튬 보조배터리 기반, 주차녹화 시간을 별도 설정 가능.</li></ul>`},
+{cat:"📲 디지털 키 & 커넥티드", icon:"📱", title:"커넥티드 (마이현대 앱)", tags:["마이현대","블루링크","소프트웨어업데이트","실시간교통"], body:`<ul>
+<li>플레이스토어에서 <b>'마이현대'</b> 앱 설치 → 회원가입 → 차량 등록.</li>
+<li>혜택: <b>실시간 교통정보, 무선 SW 업데이트</b>, 앱 원격 시동/에어컨 예약, 차 위치 확인(10km 내외), 차량 상태·도난 알림.</li>
+<li>요금: <b>5년간 무료</b>, 이후 월 약 5,500원 (만료 1개월 전 안내 전화).</li></ul>`},
+{cat:"📲 디지털 키 & 커넥티드", icon:"🆘", title:"SOS 버튼", tags:["SOS","긴급","렉카","고장"], body:`<ul>
+<li>위급 상황 시 누르면 커넥티드 센터 연결: <b>차량 고장·사고·렉카 등 차량 문제 해결용</b>.</li>
+<li>일반 교통사고의 보험 처리는 <b>보험사 몫</b>이라는 점 참고.</li></ul>`},
+{cat:"📲 디지털 키 & 커넥티드", icon:"💳", title:"디지털 키 (폰 키 + 카드 키)", tags:["NFC","카드키","무선충전패드","재등록"], body:`<ul>
+<li><b>핸드폰 키</b>: 블루투스 켜두면 접근 시 자동 잠금/해제. NFC로 실내 무선충전 패드에 올려놓으면 <b>시동</b>.</li>
+<li><b>카드 키</b>: 핸드폰 키와 동일하게 사용. 차에 숨겨두고 번갈아 쓰면 편함.</li>
+<li><span class="warn">★ 시동 후 NFC 카드는 패드에서 반드시 빼기</span> (과열 위험. 패드에 '등록 후 빼놓으세요' 문구 있음).</li>
+<li>핸드폰 교체 시: 앱 재설치로 해결되지만, <b>카드 키는 고객센터 전화로 재등록</b> 필요.</li>
+<li>통신 불가 지역에 대비해 <b>실물 키 1개 보관</b> 권장. 키는 총 4개(리모컨2+폰1+카드1).</li></ul>`},
+{cat:"📲 디지털 키 & 커넥티드", icon:"📺", title:"카플레이 / 안드로이드 오토", tags:["카플레이","티맵","안드로이드오토"], body:`<ul>
+<li>유선 연결 시 <b>티맵·카카오맵 등 원하는 앱을 화면에 표시</b> (화질 우수).</li>
+<li>전화가 자주 오면 화면이 꼬일 수 있어 용도에 맞게 사용 (영업사원 팁).</li></ul>`},
+{cat:"💰 보험 & 혜택", icon:"🏷️", title:"저공해차 주차요금 50% 할인", tags:["저공해차","공영주차장","할인","하이브리드"], body:`<ul>
+<li>이 차는 <b>저공해 차량</b> → 관공서 주차장(공영주차장)·공항(KTX 역사·환승주차장 포함) <b>최대 50% 감면</b> (법정 혜택).</li>
+<li>작은 주차장은 <b>말하지 않으면 할인을 안 해주는 경우가 많음</b> → 주차요금 정산 시 반드시 "저공해 차량 할인" 언급할 것.</li></ul>`},
+{cat:"💰 보험 & 혜택", icon:"🛡️", title:"렌트카 공제조합 보험", tags:["렌터카공제조합","사고접수","대물5억","자차"], body:`<ul>
+<li>렌트카는 일반 보험사가 아닌 <b>렌터카공제조합</b> 보험에 가입돼 있음.</li>
+<li>사고는 <b>전화로 접수</b>해야 합니다.</li>
+<li><b>100:0(정차 중 피해)</b>이면 원하는 곳에서 수리 가능. <b>과실이 섞이면</b> 자차 보험은 조합 지정 공업사에서만.</li>
+<li>보장 구성: <b>대물 최대 5억</b>, 대인·자기신체 등 (일반 보험과 다르니 확인 필요).</li>
+<li>조합 공식 고객센터: <b>1661-7977</b> (전국렌터카공제조합).</li></ul>`},
+{cat:"✅ 인수 후 주의사항", icon:"✅", title:"인수 직후 주의사항", tags:["썬팅","보호비닐","인수"], body:`<ul>
+<li><b>썬팅 직후</b>: 표시 종이를 제거할 때까지 <b>창문을 내리지 말 것</b> (다음 날부터 가능).</li>
+<li>차체 보호 <b>비닐은 가급적 떼고 타기</b> (여름철 열기 + 환경호르몬 우려).</li>
+<li>딜러가 공임 과정 기스 책임 문제로 인도 전 비닐을 안 떼고 넘기기도 함.</li></ul>`},
+{cat:"🚗 주행 보조 (ADAS)", icon:"🚗", title:"스마트 크루즈 컨트롤 (SCC)", tags:["SCC","정속주행","속도제한","차간거리"], body:`<ul>
+<li>켜기: 핸들 오른쪽 <b>주행보조 버튼</b> → 현재 속도로 설정 (30km/h 이하면 30으로).</li>
+<li>속도 조절: <b>+/− 짧게 = 1km/h</b>, <b>길게 = 10km/h</b> 단위.</li>
+<li><b>차간거리 버튼</b>: 앞차와의 간격 조절. 연습 초기엔 가장 넓게.</li>
+<li>앞차가 느려지면 따라 감속, <b>정차 후 30초 내 출발 시 자동 재출발</b>.</li>
+<li><b>숨은 기능</b>: 주행보조 버튼을 <b>길게 누르면 '수동 속도 제한 보조'로 전환</b> — 설정 속도 이상 가속 차단 (과속 방지).</li></ul>`},
+{cat:"🚗 주행 보조 (ADAS)", icon:"🛣️", title:"고속도로 주행 보조 (HDA)", tags:["HDA","반자율주행","핸즈오프","차로유지"], body:`<ul>
+<li>SCC + 차선유지보조가 켠 상태로 <b>고속도로 진입 시 자동 작동</b> (또는 주행보조 버튼).</li>
+<li>차로를 유지하며 앞차 따라 정차·재출발. 60km/h 이상에서 옆 차로 근접 차량 발견 시 차로 안에서 살짝 피해 주행.</li>
+<li><span class="warn">⚠️ 핸즈오프 경고</span>: 핸들을 일정 시간 놓으면 경고문 → 경고음 → <b>HDA·차선유지 꺼지고 속도 제한</b>. 반드시 핸들을 잡고 주시해야 하는 보조 기능.</li>
+<li>설정: <b>설정 &gt; 차량 &gt; 운전자 보조 &gt; 주행 편의</b>에서 개별 설정.</li></ul>`},
+{cat:"🛡️ 안전 기능", icon:"🚸", title:"안전 하차 보조 (SEA)", tags:["안전하차","차일드락","후측방","문열림차단"], body:`<ul>
+<li>정차 후 <b>후측방에서 차량·오토바이·자전거가 접근</b>하면 사이드미러 경고등 + 경고음, <b>문 열림 차단</b> (전자식 차일드락 연동).</li>
+<li>운전자가 전자식 차일드락 버튼을 눌렀다 <b>10초 안에 다시 누르면</b> "직접 확인 완료"로 판단해 잠금 해제.</li>
+<li>시동이 꺼진 후에도 <b>약 3분간 작동</b>.</li></ul>`},
+{cat:"🛡️ 안전 기능", icon:"👶", title:"후석 승객 알림 (ROA)", tags:["ROA","뒷좌석","아이","반려동물"], body:`<ul>
+<li>뒷문을 열고 닫은 이력이 있는데 <b>내릴 때 확인하지 않으면 경고</b>음/경고문 표시.</li>
+<li>아이·반려동물·물건을 두고 내리는 사고 방지.</li></ul>`},
+{cat:"🛡️ 안전 기능", icon:"🚘", title:"후측방 충돌 방지 보조 (BCA)", tags:["BCA","차선변경","사각지대","제동개입"], body:`<ul>
+<li><b>차선 변경 시</b> 후측방 차량이 있으면 사이드미러 경고등 + 경고음, 위험한데도 차선을 넘으면 <b>제동까지 개입</b>.</li>
+<li><b>평행주차 후 전진 출차</b>할 때도 작동 — 뒤에서 아이·차량 접근 시 자동 제동.</li></ul>`},
+{cat:"🛡️ 안전 기능", icon:"💡", title:"하이빔 보조", tags:["하이빔","야간주행","상향등"], body:`<ul>
+<li>라이트가 AUTO 상태면 <b>상향등을 자동으로 내렸다 올려줌</b> (마주 오는 차·앞차 미등 감지).</li>
+<li>야간 2차선(시골길) 주행 시 손이 편해지는 필수 기능.</li></ul>`},
+{cat:"✨ 고급 편의", icon:"💆", title:"에르고 모션 시트", tags:["에르고모션","허리","장거리","자세보조"], body:`<ul>
+<li>SCC 작동 중 장시간 주행하면 <b>시트가 1~2분 간격으로 자세를 미세 변경</b>해 허리 부담 감소.</li>
+<li>설정: <b>설정 &gt; 차량 &gt; 시트 &gt; 에르고 모션 시트 &gt; 자세 보조</b> 켜기.</li></ul>`},
+{cat:"✨ 고급 편의", icon:"🅿️", title:"원격 스마트 주차 보조 (RSPA)", tags:["RSPA","자동주차","스마트키"], body:`<ul>
+<li>차를 주차 공간 앞에 정렬하고 <b>P로 변속</b> → 실내 <b>주차/뷰 버튼을 길게</b> 누르면 안내 화면 표시.</li>
+<li><b>스마트키를 휴대하고 차 밖으로 나온 뒤</b> 키로 전·후진 조작.</li>
+<li><span class="warn">⭐ 차 안에 키를 두고 나오면 작동하지 않습니다.</span></li></ul>`},
+{cat:"✨ 고급 편의", icon:"🖼️", title:"HUD / 디지털 사이드 미러 (옵션)", tags:["HUD","디지털사이드미러","옵션"], body:`<ul>
+<li><b>HUD(헤드업 디스플레이)</b>: 속도·내비·차선정보를 앞유리에 표시 — 시선을 떼지 않고 확인.</li>
+<li><b>디지털 사이드 미러</b>: 비 오는 날·야간 사각지대를 더 선명하게 보여줌 (어라운드뷰 전용 사이드 미러).</li>
+<li>장착 여부는 실내 미러 형상으로 확인.</li></ul>`}
+];
+
+/* item.id 부여 (즐겨찾기·검색 캐시용) */
+ITEMS.forEach((item, idx) => { item.id = idx; });
+
+/* ================= 상태 ================= */
+const LS_THEME="gn7-theme", LS_FAV="gn7-favs";
+let query = "", activeCat = null, favOnly = false;
+let favs = new Set(JSON.parse(localStorage.getItem(LS_FAV) || "[]"));
+const $ = s => document.querySelector(s);
+const CATS = [...new Set(ITEMS.map(i=>i.cat))];
+
+/* ================= 렌더 ================= */
+function searchableText(item){
+  const tmp = document.createElement("div"); tmp.innerHTML = item.body;
+  return (item.cat + " " + item.title + " " + item.tags.join(" ") + " " + tmp.textContent).toLowerCase();
+}
+const searchCache = new Map(ITEMS.map(i=>[i.id, searchableText(i)]));
+
+function visible(item){
+  if(activeCat && item.cat !== activeCat) return false;
+  if(favOnly && !favs.has(item.id)) return false;
+  if(query){
+    const t = searchCache.get(item.id);
+    if(!t.includes(query)) return false;
+  }
+  return true;
+}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function renderChips(){
+  const wrap = $("#chips");
+  const all = document.createElement("button");
+  all.type="button"; all.className="chip"+(activeCat?"":" active");
+  const total = ITEMS.length;
+  all.innerHTML = `전체 <b>${total}</b>`;
+  all.onclick = () => { activeCat=null; renderChips(); renderCards(); };
+  wrap.appendChild(all);
+  CATS.forEach(cat=>{
+    const b = document.createElement("button");
+    b.type="button"; b.className="chip"+(activeCat===cat?" active":"");
+    const n = ITEMS.filter(i=>i.cat===cat).length;
+    b.innerHTML = `${esc(cat.replace(/^[^\s]+\s/,""))} <b>${n}</b>`;
+    b.onclick = () => { activeCat = (activeCat===cat?null:cat); renderChips(); renderCards(); };
+    wrap.appendChild(b);
+  });
+}
+
+function cardHTML(item){
+  const on = favs.has(item.id) ? "on" : "";
+  return `<article class="card" id="item-${item.id}" data-id="${item.id}">
+    <div class="card-head">
+      <span class="card-icon">${item.icon}</span>
+      <h3>${esc(item.title)}</h3>
+      <button type="button" class="fav ${on}" data-id="${item.id}" aria-label="즐겨찾기 토글" aria-pressed="${on?"true":"false"}">${on?"★":"☆"}</button>
+    </div>
+    <span class="cat-label">${esc(item.cat)}</span>
+    <div class="tags">${item.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div>
+    <div class="card-body">${item.body}</div>
+  </article>`;
+}
+
+function renderCards(){
+  const root = $("#sections"); root.innerHTML="";
+  let count = 0;
+  CATS.forEach(cat=>{
+    const items = ITEMS.filter(i => i.cat===cat && visible(i));
+    if(!items.length) return;
+    count += items.length;
+    const sec = document.createElement("section");
+    sec.innerHTML = `<h2 class="section-title">${esc(cat)}</h2><div class="cards">${items.map(cardHTML).join("")}</div>`;
+    root.appendChild(sec);
+  });
+  $("#totalCount").textContent = ITEMS.length;
+  $("#empty").style.display = count ? "none" : "block";
+  $("#resultInfo").style.display = (query || favOnly) ? "flex" : "none";
+  $("#resultInfo").innerHTML = query
+    ? `"<b>${esc(query)}</b>" 검색 결과 <b>${count}</b>개 ${favOnly?"· 즐겨찾기만 보기 ON":""}`
+    : `즐겨찾기만 보기 <b>${count}</b>개`;
+  updateFavCount();
+  bindFavs();
+}
+function bindFavs(){
+  document.querySelectorAll("button.fav").forEach(btn=>{
+    btn.addEventListener("click", e=>{
+      const id = Number(e.currentTarget.dataset.id);
+      if(favs.has(id)) favs.delete(id); else favs.add(id);
+      localStorage.setItem(LS_FAV, JSON.stringify([...favs]));
+      renderCards();
+    });
+  });
+}
+function updateFavCount(){
+  $("#favToggleCount").textContent = favs.size;
+}
+
+/* ================= 검색 (debounce) ================= */
+let debounceTimer;
+$("#searchInput").addEventListener("input", e=>{
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(()=>{
+    query = e.target.value.trim().toLowerCase();
+    if(!query){ $("#clearBtn").style.visibility="hidden"; } else { $("#clearBtn").style.visibility="visible"; }
+    renderCards();
+  }, 200);
+});
+$("#clearBtn").addEventListener("click", ()=>{
+  $("#searchInput").value=""; query=""; $("#clearBtn").style.visibility="hidden"; renderCards();
+  $("#searchInput").focus();
+});
+$("#favToggle").addEventListener("click", ()=>{
+  favOnly = !favOnly;
+  $("#favToggle").classList.toggle("active", favOnly);
+  $("#favToggle").setAttribute("aria-pressed", favOnly);
+  renderCards();
+});
+
+/* ================= 테마 ================= */
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  document.querySelectorAll(".theme-group button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.themeVal === t);
+  });
+  localStorage.setItem(LS_THEME, t);
+}
+document.querySelectorAll(".theme-group button").forEach(b=>{
+  b.addEventListener("click", ()=>applyTheme(b.dataset.themeVal));
+});
+applyTheme(localStorage.getItem(LS_THEME) || "light");
+
+/* ================= 초기화 ================= */
+["#clearBtn"].forEach(s=>{$(s).style.visibility="hidden";});
+renderChips();
+renderCards();
+
+/* 해시 앵커 (깊은 링크) */
+if(location.hash){
+  setTimeout(()=>{
+    const el = document.querySelector(location.hash);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 300);
+}
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
+</body>
+</html>
